@@ -30,27 +30,34 @@ h1 {
   display: grid;
   grid-template-columns: 1fr 1fr;
   width: 100%;
-  max-width: 600px; /* 가로 */
-  gap: 12px;
+  max-width: 1240px; 
+  gap: 20px;
+}
+
+.project-card {
+  background-color: white; 
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); /* 그림자 효과 */
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
 }
 
 #projects .cell {
   aspect-ratio: 3 / 2;
   position: relative;
   overflow: hidden;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  background-color: white; 
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); /* 그림자 효과 */
+  border-bottom: 1px solid #eee; 
+  background-color: #fafafa;
 }
 
+/* 작품 화면 크기 및 위치 정렬 */
 #projects .cell iframe {
   position: absolute;
-  top: 0;
-  left: 0;
+  top: 50%;
+  left: 50%;
   width: 600px;
   height: 400px;
   border: none;
-  transform-origin: top left;
-  transform: scale(0.5); /* 600x400 캔버스를 50% 축소 */
-}
+  transform: translate(-50%, -50%) scale(1.0);
