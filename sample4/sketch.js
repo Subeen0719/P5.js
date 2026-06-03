@@ -1,120 +1,140 @@
-let eyeH = 20 // 눈의 크기 (감고 뜨는 정도)
-let face_red = 0 // 웃으면서 생기는 볼터치
-let sleepTimer = 0 // f 누르는 시간 
+let G_Color1, G_Color2;
 
 function setup() {
   createCanvas(600, 400);
+  textSize(20);
+  
+  // 광물 색깔 (Gem_Color)
+  G_Color1 = color('#aaeeff');
+  G_Color2 = color('#eebbff');
 }
+
 
 function draw() {
   background(255);
-  
-  if (keyIsPressed === true && (key === 'f' || key === 'F')) { // f 클릭 시
-    if(eyeH > 0) {
-      eyeH -= 3.0; // 눈 크기 
-    }
-    sleepTimer = sleepTimer + 1; // f를 누르는 동안 타이머 증가
-  }
-  else { // f 안클릭시
-    if(eyeH < 20) {
-      eyeH += 3.0; // 눈 크기 키움
-    }
-    sleepTimer = 0; // 키를 떼면 타이머 초기화
-  }
-
-  // 볼터치 수치 조절
-  if (mouseIsPressed === true && mouseButton === LEFT) {
-    if (face_red < 150) face_red += 5;
-  } else {
-    if (face_red > 0) face_red -= 5;
-  }
-
-  fill('#fbdfcc'); // 이하 얼굴/귀 모양 표현
-  ellipse(220,200,40,40); // 왼쪽 귀
-  ellipse(380,200,40,40); // 오른쪽 귀
-  strokeWeight(0);
-  rect(275,270,50,50); // 목
+  fill(0);
+  stroke(0);
   strokeWeight(1);
-  ellipse(300,200,150,160); // 얼굴
+  text("X: " + mouseX + "     Y: " + mouseY, 0, 20); // 마우스 위치
 
-  fill('#000000'); // 이하 머리카락 표현
-  circle(230,160,50);
-  circle(240,140,52);
-  circle(250,150,54);
-  circle(260,120,56);
-  circle(270,130,58);
-  circle(280,150,55);
-  circle(290,105,50);
-  circle(300,150,60);
-  circle(310,105,50);
-  circle(320,150,55);
-  circle(330,130,58);
-  circle(340,120,56);
-  circle(350,150,54);
-  circle(360,140,52);
-  circle(370,160,50);
+  
+  // 400프레임 반복 (Frame_Time)
+  let Frame_Time = frameCount % 400; 
+  let Hit_Time = Frame_Time % 100; // 100 프레임마다 곡괭이질 반복
 
-  if (mouseIsPressed === true && mouseButton === LEFT) { // 
-    stroke(0);
-    strokeWeight(2);
-    noFill(); 
-    arc(262, 195, 35, 20, PI, 0); // 왼쪽 눈웃음
-    arc(338, 195, 35, 20, PI, 0); // 오른쪽 눈웃음
+  
+  // 색깔 변화 (G_CChange1, G_CChange2 - Gem_ColorChange)
+  let G_CChange1 = (sin(frameCount * 0.05) + 1) / 2;
+  let G_CChange2 = lerpColor(G_Color1, G_Color2, G_CChange1);
+
+  
+  // 크기 변화 (G_SChange - Gem_ShapeChange)
+  let G_SChange = map(sin(frameCount * 0.1), -1, 1, 0.7, 1.3);
+
+  
+  // 곡괭이의 움직임 (P_Angle) / 곡괭이가 점점 빨라지는 모습 (P_Speed)
+  let P_Angle = 0;
+  if (Hit_Time < 70) { // 초반-느림
+    let P_Speed = Hit_Time / 70;
+    P_Angle = -map(sin(P_Speed * PI / 2), 0, 1, 0, PI / 3.5);
+  } else {
+    let P_Speed = (Hit_Time - 70) / 30; // 후반-빠름
+    P_Angle = -map(1 - (P_Speed * P_Speed * P_Speed), 0, 1, 0, PI / 3.5);
+  }
+
+  
+  // 돌이 깨짐 
+  fill('#dddddd');
+  beginShape();
+  if (Frame_Time < 100) {
+    // 처음
+    vertex(210, 220); vertex(330, 220); vertex(330, 340); vertex(210, 340);
+  } else if (Frame_Time < 200) {
+    // 1번 깨짐
+    vertex(260, 220); vertex(330, 220); vertex(330, 340); vertex(210, 340);
+    vertex(210, 260); vertex(230, 250);
+  } else if (Frame_Time < 300) {
+    // 2번 깨짐
+    vertex(290, 220); vertex(330, 220); vertex(330, 340); vertex(210, 340);
+    vertex(210, 300); vertex(240, 280); vertex(260, 240);
+  } else {
+    // 3번 깨짐
+    vertex(320, 220); vertex(330, 220); vertex(330, 340); vertex(240, 340);
+    vertex(260, 320); vertex(280, 270); vertex(300, 230);
+  }
+  endShape(CLOSE);
+
+  
+  // 보석
+  fill(G_CChange2);
+  
+  if (Frame_Time < 100) {
+    push(); translate(230, 240); scale(G_SChange); ellipse(0, 0, 12, 8); pop();
+  }
+  if (Frame_Time < 200) {
+    push(); translate(236, 275); scale(G_SChange); rect(-6, -5, 12, 11); pop();
+    push(); translate(270, 245); scale(G_SChange); circle(0, 0, 15); pop();
+  }
+  if (Frame_Time < 300) {
+    push(); translate(239, 311); scale(G_SChange); triangle(-7, -6, 8, -1, -1, 9); pop();
+    push(); translate(280, 280); scale(G_SChange); ellipse(0, 0, 15, 20); pop();
+  }
+
+  push(); translate(304, 246); scale(G_SChange); rect(-4, -6, 8, 12); pop();
+  push(); translate(294, 312); scale(G_SChange); quad(-14, -2, -3, -7, 26, 3, -9, 8); pop();
+
+  
+  // 떨어져 나가는 돌 
+  if (Hit_Time < 35 && Frame_Time >= 100) {
+    push();
+    translate(220 - Hit_Time * 3, 230 - Hit_Time * 3 + (Hit_Time * Hit_Time * 0.2)); 
+    rotate(-Hit_Time * 0.1);
     
-    fill('#fa7575');
-    noStroke();
-    arc(300, 245, 60, 45, 0, PI); // 입 크게
-  }
-  else {
-    fill('#ffffff'); // 눈 외형
-    ellipse(262,195,35,eyeH); // 좌
-    ellipse(338,195,35,eyeH); // 우
-  
-    fill('#000000'); // 눈알
-    circle(262,195,15*(eyeH/20)); // 좌
-    circle(338,195,15*(eyeH/20)); // 우
-    
-    strokeWeight(0); // 입
-    fill('#fa7575')
-    arc(300,250,50,35,0,PI);
-    strokeWeight(1);
-  }
-  
-  // f를 3초 이상 누르면 취침
-  if (sleepTimer > 180) { 
-    fill(0);
-    textSize(32);
-    text("Zzz...", 380, 120); 
+    fill('#dddddd');
+    triangle(-15, -15, 20, -10, -5, 20);
+    fill(G_CChange2);
+    circle(0, 0, 8);
+    pop();
   }
 
-  fill('#fcdfcc'); // 코
-  triangle(300,200,290,230,305,235);
   
-  fill(255, 100, 100, face_red); 
-  noStroke();
-  ellipse(260, 225, 30, 20); // 왼쪽 볼
-  ellipse(340, 225, 30, 20); // 오른쪽 볼
+  // 바닥에 쌓이는 보석 (Gem)
+  let Gem = 0;
+  if (Frame_Time >= 100 && Frame_Time < 200) Gem = 4;
+  else if (Frame_Time >= 200 && Frame_Time < 300) Gem = 9;
+  else if (Frame_Time >= 300) Gem = 16;
+
+  for (let i = 0; i < Gem; i++) {
+    let gemX = 130 + (i * 15) % 50; 
+    let gemY = 370 + (i * 7) % 20;
+    
+    let gemColor = lerpColor(G_Color1, G_Color2, i / 16); fill(gemColor);
+    fill(gemColor, 230, 255);
+    triangle(gemX, gemY - 5, gemX + 5, gemY + 5, gemX - 5, gemY + 5);
+  }
+
   
-  fill('#242B44'); // 옷
-  arc(302,400,250,185,PI,0);
+  // 곡괭이
+  push();
+  translate(120, 332); 
+  rotate(P_Angle);       
   
-  fill('#F9F69E'); // 옷 단추
-  circle(300,345,12);
-  circle(300,385,12);
   
-  stroke('#101112'); // 안경
-  noFill();
-  strokeWeight(1.1); 
-  circle(262,195,45);
-  circle(338,195,45);
-  line(286,190,314,190);
-  line(240,195,218,178);
-  line(360,195,388,178);
-  stroke('#000000');
+  // 곡괭이 손잡이
+  fill('brown');
+  quad(-10, 0, 35, -137, 53, -133, 10, 1);
+  
+  
+  // 곡괭이 머리
+  fill('gold');
+  quad(-35, -126, 22, -151, 102, -132, 111, -92);
+  pop();
 }
 
+
+// GIF 제작 버튼
 function keyPressed() {
-  if (key === 's' || key === 'S') {
-    saveGif('myCharacter.gif', 13); // 녹화
+  if (key === 'f' || key === 'F') {
+    saveGif('assignment.gif', 400, { units: 'frames' }); 
   }
 }
