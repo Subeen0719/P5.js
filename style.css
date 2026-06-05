@@ -30,10 +30,11 @@ h1 {
   display: grid;
   grid-template-columns: 1fr 1fr;
   width: 100%;
-  max-width: 1240px; 
+  max-width: 980px; 
   gap: 20px;
 }
 
+/* 테이블 (배경) */
 .project-card {
   background-color: white; 
   border: 1px solid #ccc;
@@ -44,15 +45,16 @@ h1 {
   flex-direction: column;
 }
 
+/* 테이블 (그림 삽입) */
 #projects .cell {
   aspect-ratio: 3 / 2;
   position: relative;
   overflow: hidden;
-  border-bottom: 1px solid #eee; 
+  border-bottom: 1px solid #eee; /* 그림, 글자 분리선 */
   background-color: #fafafa;
 }
 
-/* 작품 화면 크기 및 위치 정렬 */
+/* 작품 화면 크기 및 위치 설정 */
 #projects .cell iframe {
   position: absolute;
   top: 50%;
@@ -60,4 +62,24 @@ h1 {
   width: 600px;
   height: 400px;
   border: none;
-  transform: translate(-50%, -50%) scale(1.0);
+  transform: translate(-50%, -50%) scale(0.8); 
+}
+
+/* 작품 설명 글자 */
+.description {
+  padding: 16px;
+  text-align: center;
+}
+
+.description h3 {
+  font-size: 1.1rem;
+  margin-bottom: 8px;
+  color: #333;
+}
+
+.description p {
+  font-size: 0.9rem;
+  color: #666;
+  line-height: 1.4;
+  word-break: keep-all;
+}
